@@ -19,4 +19,10 @@ public class NotificationRequest {
 
     @NotBlank
     private String body;
+
+    public NotificationRequest(UUID userId, String subject, String body) {
+        this.userId = userId;
+        this.subject = subject;
+        this.body = body;
+    }
 }

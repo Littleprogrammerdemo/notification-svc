@@ -19,4 +19,12 @@ public class UpsertNotificationPreference {
     private NotificationType type;
 
     private String contactInfo;
+
+    // Public constructor
+    public UpsertNotificationPreference(@NotNull UUID userId, boolean notificationEnabled, @NotNull NotificationType type, String contactInfo) {
+        this.userId = userId;
+        this.notificationEnabled = notificationEnabled;
+        this.type = type;
+        this.contactInfo = contactInfo;
+    }
 }
