@@ -5,7 +5,7 @@ import lombok.Data;
 import java.util.UUID;
 
 @Data
-public class Comment {
+public class CommentRequest {
     private UUID userId;
     private String commenterUsername;
     private String postTitle;

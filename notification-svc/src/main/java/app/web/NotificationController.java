@@ -100,9 +100,9 @@ public class NotificationController {
         return ResponseEntity.ok().body(null);
     }
     @PostMapping("/like")
-    public ResponseEntity<NotificationResponse> sendLikeNotification(@RequestBody Like likeDTO) {
+    public ResponseEntity<NotificationResponse> sendLikeNotification(@RequestBody LikeRequest likeRequestDTO) {
 
-        Notification notification = notificationService.sendLikeNotification(likeDTO);
+        Notification notification = notificationService.sendLikeNotification(likeRequestDTO);
 
         NotificationResponse response = DtoMapper.fromNotification(notification);
 
@@ -112,9 +112,9 @@ public class NotificationController {
     }
 
     @PostMapping("/comment")
-    public ResponseEntity<NotificationResponse> sendCommentNotification(@RequestBody Comment commentDTO) {
+    public ResponseEntity<NotificationResponse> sendCommentNotification(@RequestBody CommentRequest commentRequestDTO) {
 
-        Notification notification = notificationService.sendCommentNotification(commentDTO);
+        Notification notification = notificationService.sendCommentNotification(commentRequestDTO);
 
         NotificationResponse response = DtoMapper.fromNotification(notification);
 
@@ -127,6 +127,17 @@ public class NotificationController {
     public ResponseEntity<NotificationResponse> sendFriendRequestNotification(@RequestBody FriendRequest friendRequestDTO) {
 
         Notification notification = notificationService.sendFriendRequestNotification(friendRequestDTO);
+
+        NotificationResponse response = DtoMapper.fromNotification(notification);
+
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(response);
+    }
+    @PostMapping("/rating")
+    public ResponseEntity<NotificationResponse> sendRatingNotification(@RequestBody RatingRequest ratingRequest) {
+
+        Notification notification = notificationService.sendRatingNotification(ratingRequest);
 
         NotificationResponse response = DtoMapper.fromNotification(notification);
 

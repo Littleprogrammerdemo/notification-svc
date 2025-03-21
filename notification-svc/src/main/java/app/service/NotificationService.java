@@ -18,7 +18,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -148,8 +147,8 @@ public class NotificationService {
             notificationRepository.save(notification);
         }
     }
-    public Notification sendLikeNotification(Like likeDTO) {
-        UUID userId = likeDTO.getUserId();
+    public Notification sendLikeNotification(LikeRequest likeRequestDTO) {
+        UUID userId = likeRequestDTO.getUserId();
         NotificationPreference userPreference = getPreferenceByUserId(userId);
 
         if (!userPreference.isNotificationsEnabled()) {
@@ -159,11 +158,11 @@ public class NotificationService {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(userPreference.getContactInfo());
         message.setSubject("New Like on your Post");
-        message.setText("User %s liked your post: %s".formatted(likeDTO.getLikerUsername(), likeDTO.getPostTitle()));
+        message.setText("User %s liked your post: %s".formatted(likeRequestDTO.getLikerUsername(), likeRequestDTO.getPostTitle()));
 
         Notification notification = Notification.builder()
                 .subject("New Like")
-                .body("User %s liked your post: %s".formatted(likeDTO.getLikerUsername(), likeDTO.getPostTitle()))
+                .body("User %s liked your post: %s".formatted(likeRequestDTO.getLikerUsername(), likeRequestDTO.getPostTitle()))
                 .userId(userId)
                 .isDeleted(false)
                 .type(NotificationType.EMAIL)
@@ -180,8 +179,8 @@ public class NotificationService {
         return notificationRepository.save(notification);
     }
 
-    public Notification sendCommentNotification(Comment commentDTO) {
-        UUID userId = commentDTO.getUserId();
+    public Notification sendCommentNotification(CommentRequest commentRequestDTO) {
+        UUID userId = commentRequestDTO.getUserId();
         NotificationPreference userPreference = getPreferenceByUserId(userId);
 
         if (!userPreference.isNotificationsEnabled()) {
@@ -191,11 +190,11 @@ public class NotificationService {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(userPreference.getContactInfo());
         message.setSubject("New Comment on your Post");
-        message.setText("User %s commented on your post: %s".formatted(commentDTO.getCommenterUsername(), commentDTO.getPostTitle()));
+        message.setText("User %s commented on your post: %s".formatted(commentRequestDTO.getCommenterUsername(), commentRequestDTO.getPostTitle()));
 
         Notification notification = Notification.builder()
                 .subject("New Comment")
-                .body("User %s commented on your post: %s".formatted(commentDTO.getCommenterUsername(), commentDTO.getPostTitle()))
+                .body("User %s commented on your post: %s".formatted(commentRequestDTO.getCommenterUsername(), commentRequestDTO.getPostTitle()))
                 .userId(userId)
                 .isDeleted(false)
                 .type(NotificationType.EMAIL)
@@ -239,6 +238,40 @@ public class NotificationService {
         } catch (Exception e) {
             notification.setStatus(NotificationStatus.FAILED);
             log.warn("There was an issue sending a friend request notification to %s due to %s.".formatted(userPreference.getContactInfo(), e.getMessage()));
+        }
+
+        return notificationRepository.save(notification);
+    }
+    public Notification sendRatingNotification(RatingRequest ratingDTO) {
+        UUID userId = ratingDTO.getUserId();
+        NotificationPreference userPreference = getPreferenceByUserId(userId);
+
+        if (!userPreference.isNotificationsEnabled()) {
+            throw new IllegalArgumentException("User with id %s does not allow to receive notifications.".formatted(userId));
+        }
+
+        // Construct the email message
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(userPreference.getContactInfo());
+        message.setSubject("New Rating on your Post");
+        message.setText("User %s rated your post '%s' with a rating of %d.".formatted(ratingDTO.getRaterUsername(), ratingDTO.getPostTitle(), ratingDTO.getRatingValue()));
+
+        // Create the notification object
+        Notification notification = Notification.builder()
+                .subject("New Rating")
+                .body("User %s rated your post '%s' with a rating of %d.".formatted(ratingDTO.getRaterUsername(), ratingDTO.getPostTitle(), ratingDTO.getRatingValue()))
+                .userId(userId)
+                .isDeleted(false)
+                .type(NotificationType.EMAIL)
+                .build();
+
+        // Try sending the email
+        try {
+            mailSender.send(message);
+            notification.setStatus(NotificationStatus.RECEIVED);
+        } catch (Exception e) {
+            notification.setStatus(NotificationStatus.FAILED);
+            log.warn("There was an issue sending a rating notification to %s due to %s.".formatted(userPreference.getContactInfo(), e.getMessage()));
         }
 
         return notificationRepository.save(notification);
