@@ -6,8 +6,7 @@ import app.model.NotificationStatus;
 import app.model.NotificationType;
 import app.repository.NotificationPreferenceRepository;
 import app.repository.NotificationRepository;
-import app.web.dto.NotificationRequest;
-import app.web.dto.UpsertNotificationPreference;
+import app.web.dto.*;
 import app.web.mapper.DtoMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -148,5 +147,100 @@ public class NotificationService {
 
             notificationRepository.save(notification);
         }
+    }
+    public Notification sendLikeNotification(Like likeDTO) {
+        UUID userId = likeDTO.getUserId();
+        NotificationPreference userPreference = getPreferenceByUserId(userId);
+
+        if (!userPreference.isNotificationsEnabled()) {
+            throw new IllegalArgumentException("User with id %s does not allow to receive notifications.".formatted(userId));
+        }
+
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(userPreference.getContactInfo());
+        message.setSubject("New Like on your Post");
+        message.setText("User %s liked your post: %s".formatted(likeDTO.getLikerUsername(), likeDTO.getPostTitle()));
+
+        Notification notification = Notification.builder()
+                .subject("New Like")
+                .body("User %s liked your post: %s".formatted(likeDTO.getLikerUsername(), likeDTO.getPostTitle()))
+                .userId(userId)
+                .isDeleted(false)
+                .type(NotificationType.EMAIL)
+                .build();
+
+        try {
+            mailSender.send(message);
+            notification.setStatus(NotificationStatus.RECEIVED);
+        } catch (Exception e) {
+            notification.setStatus(NotificationStatus.FAILED);
+            log.warn("There was an issue sending a like notification to %s due to %s.".formatted(userPreference.getContactInfo(), e.getMessage()));
+        }
+
+        return notificationRepository.save(notification);
+    }
+
+    public Notification sendCommentNotification(Comment commentDTO) {
+        UUID userId = commentDTO.getUserId();
+        NotificationPreference userPreference = getPreferenceByUserId(userId);
+
+        if (!userPreference.isNotificationsEnabled()) {
+            throw new IllegalArgumentException("User with id %s does not allow to receive notifications.".formatted(userId));
+        }
+
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(userPreference.getContactInfo());
+        message.setSubject("New Comment on your Post");
+        message.setText("User %s commented on your post: %s".formatted(commentDTO.getCommenterUsername(), commentDTO.getPostTitle()));
+
+        Notification notification = Notification.builder()
+                .subject("New Comment")
+                .body("User %s commented on your post: %s".formatted(commentDTO.getCommenterUsername(), commentDTO.getPostTitle()))
+                .userId(userId)
+                .isDeleted(false)
+                .type(NotificationType.EMAIL)
+                .build();
+
+        try {
+            mailSender.send(message);
+            notification.setStatus(NotificationStatus.RECEIVED);
+        } catch (Exception e) {
+            notification.setStatus(NotificationStatus.FAILED);
+            log.warn("There was an issue sending a comment notification to %s due to %s.".formatted(userPreference.getContactInfo(), e.getMessage()));
+        }
+
+        return notificationRepository.save(notification);
+    }
+
+    public Notification sendFriendRequestNotification(FriendRequest friendRequestDTO) {
+        UUID userId = friendRequestDTO.getReceiverId();
+        NotificationPreference userPreference = getPreferenceByUserId(userId);
+
+        if (!userPreference.isNotificationsEnabled()) {
+            throw new IllegalArgumentException("User with id %s does not allow to receive notifications.".formatted(userId));
+        }
+
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(userPreference.getContactInfo());
+        message.setSubject("New Friend Request");
+        message.setText("User %s sent you a friend request.".formatted(friendRequestDTO.getSenderUsername()));
+
+        Notification notification = Notification.builder()
+                .subject("New Friend Request")
+                .body("User %s sent you a friend request.".formatted(friendRequestDTO.getSenderUsername()))
+                .userId(userId)
+                .isDeleted(false)
+                .type(NotificationType.EMAIL)
+                .build();
+
+        try {
+            mailSender.send(message);
+            notification.setStatus(NotificationStatus.RECEIVED);
+        } catch (Exception e) {
+            notification.setStatus(NotificationStatus.FAILED);
+            log.warn("There was an issue sending a friend request notification to %s due to %s.".formatted(userPreference.getContactInfo(), e.getMessage()));
+        }
+
+        return notificationRepository.save(notification);
     }
 }

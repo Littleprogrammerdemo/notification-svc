@@ -99,4 +99,39 @@ public class NotificationController {
 
         return ResponseEntity.ok().body(null);
     }
+    @PostMapping("/like")
+    public ResponseEntity<NotificationResponse> sendLikeNotification(@RequestBody Like likeDTO) {
+
+        Notification notification = notificationService.sendLikeNotification(likeDTO);
+
+        NotificationResponse response = DtoMapper.fromNotification(notification);
+
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(response);
+    }
+
+    @PostMapping("/comment")
+    public ResponseEntity<NotificationResponse> sendCommentNotification(@RequestBody Comment commentDTO) {
+
+        Notification notification = notificationService.sendCommentNotification(commentDTO);
+
+        NotificationResponse response = DtoMapper.fromNotification(notification);
+
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(response);
+    }
+
+    @PostMapping("/friend-request")
+    public ResponseEntity<NotificationResponse> sendFriendRequestNotification(@RequestBody FriendRequest friendRequestDTO) {
+
+        Notification notification = notificationService.sendFriendRequestNotification(friendRequestDTO);
+
+        NotificationResponse response = DtoMapper.fromNotification(notification);
+
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(response);
+    }
 }

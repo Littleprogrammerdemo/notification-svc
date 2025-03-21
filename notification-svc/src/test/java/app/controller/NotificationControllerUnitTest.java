@@ -1,23 +1,16 @@
 package app.controller;
 
-import app.model.Notification;
-import app.model.NotificationPreference;
-import app.model.NotificationType;
 import app.service.NotificationService;
 import app.web.NotificationController;
-import app.web.dto.*;
-import app.web.mapper.DtoMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.util.Collections;
 import java.util.UUID;
 
 import static org.mockito.Mockito.*;
