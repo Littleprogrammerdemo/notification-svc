@@ -1,7 +1,6 @@
-package app.controller;
+package app.web;
 
 import app.service.NotificationService;
-import app.web.NotificationController;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
