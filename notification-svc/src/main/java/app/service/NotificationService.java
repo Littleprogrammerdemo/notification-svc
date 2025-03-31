@@ -34,6 +34,7 @@ public class NotificationService {
         this.mailSender = mailSender;
     }
 
+
     public NotificationPreference upsertPreference(UpsertNotificationPreference dto) {
 
         Optional<NotificationPreference> userNotificationPreferenceOptional = preferenceRepository.findByUserId(dto.getUserId());

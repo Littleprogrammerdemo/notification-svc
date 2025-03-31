@@ -23,8 +23,9 @@ public class NotificationPreference {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private NotificationType type;
+    @Builder.Default
+    private boolean notificationsEnabled = true;
 
-    private boolean notificationsEnabled;
 
     private String contactInfo;
 
