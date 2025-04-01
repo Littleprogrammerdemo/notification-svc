@@ -5,7 +5,6 @@ import app.model.NotificationType;
 import lombok.Builder;
 import lombok.Data;
 
-import java.time.LocalDateTime;
 
 @Data
 @Builder
