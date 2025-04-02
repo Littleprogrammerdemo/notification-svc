@@ -9,7 +9,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(ExceptionAdvice.class)
-public class ExceptionAdviceTest {
+public class ExceptionAdviceUnitTest {
 
     @Autowired
     private MockMvc mockMvc;

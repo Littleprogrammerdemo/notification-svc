@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class DtoMapperTest {
+class DtoMapperUnitTest {
 
     @Test
     void shouldMapNotificationTypeCorrectly() {
@@ -34,7 +34,7 @@ class DtoMapperTest {
         assertEquals(entity.getUserId(), response.getUserId());
         assertEquals(entity.getType(), response.getType());
         assertEquals(entity.getContactInfo(), response.getContactInfo());
-        assertEquals(entity.isNotificationsEnabled(), response.isEnabled());
+        assertEquals(entity.isNotificationsEnabled(), response.isNotificationEnabled());
     }
 
     @Test

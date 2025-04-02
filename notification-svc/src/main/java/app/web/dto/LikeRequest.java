@@ -1,5 +1,6 @@
 package app.web.dto;
 
+import lombok.Builder;
 import lombok.Data;
 
 import java.util.UUID;
