@@ -23,7 +23,7 @@ public class DtoMapper {
                 .id(entity.getId())
                 .type(entity.getType())
                 .contactInfo(entity.getContactInfo())
-                .enabled(entity.isNotificationsEnabled())
+                .notificationEnabled(entity.isNotificationsEnabled())
                 .userId(entity.getUserId())
                 .build();
     }

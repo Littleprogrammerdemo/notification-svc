@@ -16,7 +16,7 @@ public class NotificationPreferenceResponse {
 
     private NotificationType type;
 
-    private boolean enabled;
+    private boolean notificationEnabled;
 
     private String contactInfo;
 }
