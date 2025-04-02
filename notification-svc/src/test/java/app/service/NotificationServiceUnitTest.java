@@ -193,4 +193,5 @@ public class NotificationServiceUnitTest {
         verify(mailSender, times(1)).send(any(SimpleMailMessage.class));
         verify(notificationRepository, times(1)).save(failedNotification);
     }
+
 }
